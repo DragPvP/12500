@@ -1,5 +1,25 @@
 {
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "api/**/*.ts",
+      "use": "@vercel/node@3"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/dist/public/$1"
+    }
+  ],
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/public",
-  "framework": null
+  "outputDirectory": "dist/public"
 }
