@@ -30,16 +30,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Convert to USDT value
     const usdtValue = parseFloat(payAmount) * rate;
     
-    // PEPEWUFF token price: 1 USDT = 1000 PEPEWUFF tokens
-    const tokenPrice = 0.001; // $0.001 per token
+    // PEPEWUFF token price: 1 USDT = 65 PEPEWUFF tokens (as per UI)
+    const tokenPrice = 1 / 65; // ~$0.0154 per token
     const tokenAmount = usdtValue / tokenPrice;
+
+    // Validate calculations to prevent NaN
+    if (isNaN(usdtValue) || isNaN(tokenAmount)) {
+      return res.status(400).json({ message: "Invalid calculation result" });
+    }
 
     res.json({
       currency,
       payAmount: parseFloat(payAmount),
-      usdtValue: usdtValue.toFixed(2),
-      tokenAmount: tokenAmount.toLocaleString(),
-      tokenPrice: tokenPrice
+      usdtValue: parseFloat(usdtValue.toFixed(2)),
+      tokenAmount: parseFloat(tokenAmount.toFixed(2)),
+      tokenPrice: tokenPrice,
+      rate: rate
     });
   } catch (error) {
     res.status(500).json({ message: "Calculation failed" });

@@ -12,6 +12,7 @@ interface CalculationResult {
   payAmount: number;
   usdtValue: number;
   tokenAmount: number;
+  tokenPrice: number;
   rate: number;
 }
 

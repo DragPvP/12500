@@ -11,6 +11,11 @@ Originally started as a simple Python Git clone script, this project has evolved
 - ✓ Eliminated problematic TypeScript path aliases (`@shared/schema`) in serverless functions
 - ✓ Updated `/api/presale.ts` to initialize database connection inline for Vercel compatibility
 - ✓ Enhanced Vercel configuration with explicit function runtime settings
+- ✓ Fixed token conversion NaN errors when entering ETH, SOL, BNB, USDT amounts
+- ✓ Corrected API calculation endpoint to return proper numeric formats
+- ✓ Enhanced frontend parsing to handle localized number strings safely
+- ✓ Added NaN validation throughout conversion and countdown components
+- ✓ Updated token rate calculation to match UI (1 USDT = 65 PEPEWUFF)
 - ✓ Added proper error handling with detailed error messages for debugging
 - ✓ Fixed Vercel deployment 404 errors for static images (mascot-logo.png, pepewuff-logo.png)
 - ✓ Moved images from `client/img/` to `client/public/img/` for proper Vite asset serving

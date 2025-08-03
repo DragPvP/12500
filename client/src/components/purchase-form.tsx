@@ -46,9 +46,23 @@ export function PurchaseForm({ selectedCurrency }: PurchaseFormProps) {
   }, [payAmount, selectedCurrency]);
 
   useEffect(() => {
-    if (calculateMutation.data) {
-      const tokenAmount = Number(calculateMutation.data.tokenAmount);
-      setReceiveAmount(tokenAmount.toFixed(2));
+    if (calculateMutation.data && calculateMutation.data.tokenAmount !== undefined) {
+      const tokenAmount: number | string = calculateMutation.data.tokenAmount;
+      // Handle both number and string responses safely
+      let numericAmount: number;
+      
+      if (typeof tokenAmount === 'string') {
+        numericAmount = parseFloat(String(tokenAmount).replace(/,/g, ''));
+      } else {
+        numericAmount = Number(tokenAmount);
+      }
+      
+      if (!isNaN(numericAmount) && numericAmount > 0) {
+        setReceiveAmount(numericAmount.toLocaleString());
+      } else {
+        setReceiveAmount('');
+        console.warn('Invalid token amount received:', tokenAmount);
+      }
     }
     // Clear receive amount if calculation fails
     if (calculateMutation.error) {
