@@ -12,6 +12,18 @@
   ],
   "routes": [
     {
+      "src": "/api/presale/calculate",
+      "dest": "/api/presale/calculate.ts"
+    },
+    {
+      "src": "/api/wallet/purchase",
+      "dest": "/api/wallet/purchase.ts"
+    },
+    {
+      "src": "/api/presale",
+      "dest": "/api/presale.ts"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },
