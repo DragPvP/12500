@@ -12,6 +12,9 @@ Originally started as a simple Python Git clone script, this project has evolved
 - ✓ Updated `/api/presale.ts` to initialize database connection inline for Vercel compatibility
 - ✓ Enhanced Vercel configuration with explicit function runtime settings
 - ✓ Added proper error handling with detailed error messages for debugging
+- ✓ Fixed Vercel deployment 404 errors for static images (mascot-logo.png, pepewuff-logo.png)
+- ✓ Moved images from `client/img/` to `client/public/img/` for proper Vite asset serving
+- ✓ Resolved static asset deployment issues for Vercel compatibility
 - ✓ Removed obsolete Clone Script workflows from development environment
 - ✓ Fixed Vercel deployment 404 NOT_FOUND errors by restructuring serverless functions
 - ✓ Created dedicated API routes for Vercel in `/api/` directory:
