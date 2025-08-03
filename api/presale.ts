@@ -1,8 +1,20 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
-import { presaleData } from '../shared/schema';
 import { desc } from "drizzle-orm";
+
+// Inline schema definition to avoid import issues in Vercel
+import { pgTable, varchar, decimal, timestamp, boolean, sql } from "drizzle-orm/pg-core";
+
+const presaleData = pgTable("presale_data", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  totalRaised: decimal("total_raised", { precision: 18, scale: 2 }).notNull().default("0"),
+  totalSupply: decimal("total_supply", { precision: 18, scale: 2 }).notNull().default("1000000"),
+  currentRate: decimal("current_rate", { precision: 18, scale: 8 }).notNull().default("47"),
+  stageEndTime: timestamp("stage_end_time").notNull(),
+  isActive: boolean("is_active").notNull().default(true),
+  updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') {
@@ -27,9 +39,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Initialize presale data if none exists
       const initialData = {
         totalRaised: "76735.34",
-        totalSupply: "200000",
+        totalSupply: "200000", 
         currentRate: "65",
-        stageEndTime: new Date(Date.now() + (3 * 24 * 60 * 60 * 1000) + (5 * 60 * 60 * 1000) + (17 * 60 * 1000) + (14 * 1000)), // 3 days, 5 hours, 17 mins, 14 secs from now
+        stageEndTime: new Date(Date.now() + (3 * 24 * 60 * 60 * 1000) + (5 * 60 * 60 * 1000) + (17 * 60 * 1000) + (14 * 1000)),
         isActive: true,
       };
       
@@ -40,12 +52,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
     
     // Calculate percentage
-    const totalRaised = parseFloat(currentPresaleData.totalRaised);
-    const goalAmount = parseFloat(currentPresaleData.totalSupply); // Using totalSupply field as goal amount
+    const totalRaised = parseFloat(currentPresaleData.totalRaised.toString());
+    const goalAmount = parseFloat(currentPresaleData.totalSupply.toString());
     const percentage = goalAmount > 0 ? (totalRaised / goalAmount) * 100 : 0;
     
     res.json({
-      ...currentPresaleData,
+      id: currentPresaleData.id,
+      totalRaised: currentPresaleData.totalRaised.toString(),
+      totalSupply: currentPresaleData.totalSupply.toString(),
+      currentRate: currentPresaleData.currentRate.toString(),
+      stageEndTime: currentPresaleData.stageEndTime,
+      isActive: currentPresaleData.isActive,
+      updatedAt: currentPresaleData.updatedAt,
       percentage: percentage.toFixed(2)
     });
   } catch (error) {
