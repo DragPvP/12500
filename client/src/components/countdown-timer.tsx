@@ -14,20 +14,37 @@ export function CountdownTimer({ targetDate }: CountdownTimerProps) {
 
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const target = new Date(targetDate);
-      const now = new Date();
-      const difference = target.getTime() - now.getTime();
+      try {
+        const target = new Date(targetDate);
+        const now = new Date();
+        
+        // Check if target date is valid
+        if (isNaN(target.getTime())) {
+          return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+        }
+        
+        const difference = target.getTime() - now.getTime();
 
-      if (difference > 0) {
-        return {
-          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((difference / 1000 / 60) % 60),
-          seconds: Math.floor((difference / 1000) % 60),
-        };
+        if (difference > 0) {
+          const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+          const minutes = Math.floor((difference / 1000 / 60) % 60);
+          const seconds = Math.floor((difference / 1000) % 60);
+          
+          // Ensure no NaN values
+          return {
+            days: isNaN(days) ? 0 : days,
+            hours: isNaN(hours) ? 0 : hours,
+            minutes: isNaN(minutes) ? 0 : minutes,
+            seconds: isNaN(seconds) ? 0 : seconds,
+          };
+        }
+
+        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      } catch (error) {
+        console.warn('Invalid target date for countdown:', targetDate);
+        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
       }
-
-      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
     };
 
     const timer = setInterval(() => {
@@ -46,25 +63,25 @@ export function CountdownTimer({ targetDate }: CountdownTimerProps) {
       <div className="flex justify-center space-x-2 sm:space-x-4 mb-2">
         <div className="text-center">
           <div className="bg-white text-black rounded-lg px-2 sm:px-4 py-1 sm:py-2 font-bold text-lg sm:text-2xl shadow-3d">
-            {timeLeft.days.toString().padStart(2, '0')}
+            {(timeLeft.days || 0).toString().padStart(2, '0')}
           </div>
           <div className="text-xs sm:text-sm mt-1">Days</div>
         </div>
         <div className="text-center">
           <div className="bg-white text-black rounded-lg px-2 sm:px-4 py-1 sm:py-2 font-bold text-lg sm:text-2xl shadow-3d">
-            {timeLeft.hours.toString().padStart(2, '0')}
+            {(timeLeft.hours || 0).toString().padStart(2, '0')}
           </div>
           <div className="text-xs sm:text-sm mt-1">Hours</div>
         </div>
         <div className="text-center">
           <div className="bg-white text-black rounded-lg px-2 sm:px-4 py-1 sm:py-2 font-bold text-lg sm:text-2xl shadow-3d">
-            {timeLeft.minutes.toString().padStart(2, '0')}
+            {(timeLeft.minutes || 0).toString().padStart(2, '0')}
           </div>
           <div className="text-xs sm:text-sm mt-1">Mins</div>
         </div>
         <div className="text-center">
           <div className="bg-white text-black rounded-lg px-2 sm:px-4 py-1 sm:py-2 font-bold text-lg sm:text-2xl shadow-3d">
-            {timeLeft.seconds.toString().padStart(2, '0')}
+            {(timeLeft.seconds || 0).toString().padStart(2, '0')}
           </div>
           <div className="text-xs sm:text-sm mt-1">Secs</div>
         </div>

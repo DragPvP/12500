@@ -6,7 +6,6 @@ import { CountdownTimer } from './countdown-timer';
 import { CurrencySelector } from './currency-selector';
 import { PurchaseForm } from './purchase-form';
 import { ConnectButton } from './connect-button';
-import { TokenomicsSection } from './tokenomics-section';
 import { usePresaleData } from '@/hooks/use-presale';
 import { usePurchaseHistory } from '@/hooks/use-purchase-history';
 import { useAppKitAccount } from '@reown/appkit/react';
@@ -72,6 +71,10 @@ export function PresaleCard() {
   const finalData = presaleData || directData;
   const finalLoading = isLoading && directLoading;
   
+  // Safe percentage calculation with NaN protection
+  const safePercentage = finalData?.percentage ? 
+    (isNaN(parseFloat(finalData.percentage)) ? 0 : parseFloat(finalData.percentage)) : 0;
+  
   // Debug logging removed - data is working correctly
 
   if (finalLoading && !finalData) {
@@ -105,18 +108,18 @@ export function PresaleCard() {
             USD RAISED: ${finalData ? parseFloat(finalData.totalRaised).toLocaleString() : '0'}
           </span>
           <span className="text-sm sm:text-lg font-semibold text-black">
-            {finalData?.percentage || '0'}%
+            {safePercentage.toFixed(1)}%
           </span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-4 shadow-inner">
           <div 
             className="progress-bar h-4 rounded-full" 
-            style={{ width: `${finalData?.percentage || 0}%` }}
+            style={{ width: `${Math.min(Math.max(safePercentage, 0), 100)}%` }}
           />
         </div>
         <div className="text-center mt-4 py-2 border-2 border-dashed border-gray-300">
           <span className="text-sm sm:text-base text-gray-600 font-medium">
-            $1 USDT = {finalData?.currentRate || '65'} $PEPEWUFF
+            $1 USDT = {finalData?.currentRate && !isNaN(parseFloat(finalData.currentRate)) ? finalData.currentRate : '65'} $PEPEWUFF
           </span>
         </div>
       </div>
